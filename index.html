@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Invoice Generator</title>
+<link rel="stylesheet" href="style.css" />
+</head>
+<body>
+<div class="app">
+  <header class="app-header">
+    <h1>Invoice Generator</h1>
+    <div class="theme-menu">
+      <button id="themeBtn" class="icon-btn" title="Toggle theme" aria-label="Toggle theme">
+        <svg id="themeIcon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+      </button>
+      <div id="themeDropdown" class="dropdown hidden">
+        <button data-theme="light">Light</button>
+        <button data-theme="dark">Dark</button>
+        <button data-theme="system">System</button>
+      </div>
+    </div>
+  </header>
+
+  <div class="tabs">
+    <div class="tablist" role="tablist">
+      <button class="tab active" data-tab="edit" role="tab">Edit Invoice</button>
+      <button class="tab" data-tab="preview" role="tab">Preview</button>
+    </div>
+  </div>
+
+  <main>
+    <section id="editPanel" class="panel">
+      <div class="grid-2col">
+        <div class="col">
+          <div class="card">
+            <h2>Invoice Details</h2>
+            <div class="field">
+              <label for="invoiceNumber">Invoice Number</label>
+              <input type="text" id="invoiceNumber" />
+            </div>
+            <div class="field">
+              <label for="invoiceDate">Date</label>
+              <input type="date" id="invoiceDate" />
+            </div>
+            <div class="field">
+              <label for="dueDate">Due Date</label>
+              <input type="date" id="dueDate" />
+            </div>
+            <div class="field">
+              <label for="invoiceCurrency">Invoice Currency</label>
+              <select id="invoiceCurrency"></select>
+            </div>
+            <div class="field">
+              <label for="taxRate">Tax Rate (%)</label>
+              <input type="number" id="taxRate" min="0" step="0.01" value="0" />
+            </div>
+            <div class="field">
+              <label>Invoice Discount</label>
+              <div class="radio-row">
+                <label class="radio"><input type="radio" name="invoiceDiscountType" value="percentage" checked /> Percentage (%)</label>
+                <label class="radio"><input type="radio" name="invoiceDiscountType" value="amount" /> Amount</label>
+              </div>
+              <input type="number" id="invoiceDiscountValue" min="0" step="0.01" value="0" />
+            </div>
+            <div class="field checkbox-field">
+              <label class="checkbox"><input type="checkbox" id="applyDiscountToDiscounted" checked /> Apply invoice discount to already discounted items</label>
+            </div>
+          </div>
+
+          <div class="card">
+            <h2>To</h2>
+            <div class="field">
+              <label for="toName">Name</label>
+              <input type="text" id="toName" />
+            </div>
+            <div class="field">
+              <label for="toEmail">Email</label>
+              <input type="email" id="toEmail" />
+            </div>
+            <div class="field">
+              <label for="toAddress">Address</label>
+              <textarea id="toAddress" rows="3"></textarea>
+            </div>
+          </div>
+        </div>
+
+        <div class="col">
+          <div class="card">
+            <h2>Company Information</h2>
+            <div class="field">
+              <label for="companyName">Company Name</label>
+              <input type="text" id="companyName" />
+            </div>
+            <div class="field">
+              <label for="companyLogo">Company Logo</label>
+              <input type="file" id="companyLogo" accept="image/*" />
+            </div>
+            <div class="field">
+              <label for="companyDetails">Company Details</label>
+              <textarea id="companyDetails" rows="3" placeholder="Registration number, VAT ID, etc."></textarea>
+            </div>
+          </div>
+
+          <div class="card">
+            <h2>From</h2>
+            <div class="field">
+              <label for="fromName">Name</label>
+              <input type="text" id="fromName" />
+            </div>
+            <div class="field">
+              <label for="fromEmail">Email</label>
+              <input type="email" id="fromEmail" />
+            </div>
+            <div class="field">
+              <label for="fromAddress">Address</label>
+              <textarea id="fromAddress" rows="3"></textarea>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card full">
+        <h2>Items</h2>
+        <div id="itemsList" class="items-list"></div>
+        <button id="addItemBtn" class="btn-secondary" type="button">+ Add Item</button>
+
+        <div class="totals">
+          <div class="totals-row"><span>Subtotal:</span><span id="subtotalOut">$0.00</span></div>
+          <div class="totals-row" id="invoiceDiscountRow" style="display:none"><span id="invoiceDiscountLabel">Discount:</span><span id="invoiceDiscountOut">-$0.00</span></div>
+          <div class="totals-row"><span id="taxLabel">Tax (0%):</span><span id="taxOut">$0.00</span></div>
+          <div class="totals-row total"><span>Total:</span><span id="totalOut">$0.00</span></div>
+        </div>
+      </div>
+
+      <div class="grid-2col">
+        <div class="col">
+          <div class="card">
+            <h2>Notes</h2>
+            <textarea id="notes" rows="4" placeholder="Additional notes for the client..."></textarea>
+          </div>
+        </div>
+        <div class="col">
+          <div class="card">
+            <h2>Invoice Footer</h2>
+            <textarea id="footer" rows="4" placeholder="Thank you for your business!"></textarea>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="previewPanel" class="panel hidden">
+      <div id="invoicePaper" class="invoice-paper">
+        <div class="invoice-paper-head">
+          <div>
+            <img id="previewLogo" class="preview-logo hidden" alt="Company logo" />
+            <div id="previewCompanyName" class="preview-company-name"></div>
+            <h1>INVOICE</h1>
+            <div id="previewInvoiceNumber" class="muted">#INV</div>
+          </div>
+          <div class="invoice-paper-dates">
+            <div><span id="previewDateLabel">Date:</span></div>
+            <div><span id="previewDueDateLabel">Due Date:</span></div>
+          </div>
+        </div>
+
+        <div class="invoice-paper-parties">
+          <div>
+            <h3>From:</h3>
+            <div id="previewFrom"></div>
+          </div>
+          <div>
+            <h3>To:</h3>
+            <div id="previewTo"></div>
+          </div>
+        </div>
+
+        <table class="invoice-table">
+          <thead>
+            <tr><th>Description</th><th>Quantity</th><th>Price</th><th>Discount</th><th>Amount</th></tr>
+          </thead>
+          <tbody id="previewItemsBody"></tbody>
+        </table>
+
+        <div class="invoice-paper-totals">
+          <div class="totals-row"><span>Subtotal:</span><span id="previewSubtotal">$0.00</span></div>
+          <div class="totals-row" id="previewDiscountRow" style="display:none"><span id="previewDiscountLabel">Discount:</span><span id="previewDiscountOut">-$0.00</span></div>
+          <div class="totals-row"><span id="previewTaxLabel">Tax (0%):</span><span id="previewTaxOut">$0.00</span></div>
+          <div class="totals-row total"><span>Total:</span><span id="previewTotalOut">$0.00</span></div>
+        </div>
+
+        <div id="previewNotesBlock" class="invoice-paper-notes hidden">
+          <h3>Notes</h3>
+          <div id="previewNotes"></div>
+        </div>
+
+        <div id="previewFooterBlock" class="invoice-paper-footer">Thank you for your business!</div>
+      </div>
+
+      <button id="downloadPdfBtn" class="btn-primary" type="button">Download PDF</button>
+    </section>
+  </main>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
