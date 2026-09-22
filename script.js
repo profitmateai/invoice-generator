@@ -28,14 +28,13 @@ const state = {
   invoiceDiscountType: "percentage",
   invoiceDiscountValue: 0,
   applyDiscountToDiscounted: true,
-  companyName: "",
+  companyName: "Kanaste OÜ",
   companyLogo: "",
   registrationNo: "12121424",
   vatNo: "EE101467474",
   bankAccount: "",
   companyPhone: "5010310",
   issuedBy: "",
-  fromName: "",
   fromEmail: "anpold@gmail.com",
   fromAddress: "Suve 19\n74613, Saue vald, Harjumaa",
   toName: "Kanaste OÜ",
@@ -256,14 +255,8 @@ function renderPreview() {
     logo.classList.add("hidden");
   }
 
-  el("previewFrom").innerHTML = renderParty(null, null, state.fromAddress);
   el("previewTo").innerHTML = renderParty(state.toName, state.toEmail, state.toAddress);
-
-  const metaLines = [];
-  if (state.registrationNo && state.registrationNo.trim()) metaLines.push("Registration No: " + state.registrationNo);
-  if (state.vatNo && state.vatNo.trim()) metaLines.push("VAT No: " + state.vatNo);
-  if (state.bankAccount && state.bankAccount.trim()) metaLines.push("Bank Account: " + state.bankAccount);
-  el("previewCompanyMeta").textContent = metaLines.join("\n");
+  el("previewCompanyMeta").textContent = "YOUR COMPANY DETAILS";
 
   const body = el("previewItemsBody");
   body.innerHTML = state.items
@@ -346,7 +339,6 @@ function initFields() {
   bindField("bankAccount", "bankAccount");
   bindField("companyPhone", "companyPhone");
   bindField("issuedBy", "issuedBy");
-  bindField("fromName", "fromName");
   bindField("fromEmail", "fromEmail");
   bindField("fromAddress", "fromAddress");
   bindField("toName", "toName");

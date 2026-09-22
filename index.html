@@ -91,7 +91,7 @@
 
         <div class="col">
           <div class="card">
-            <h2>Company Information</h2>
+            <h2>From</h2>
             <div class="field">
               <label for="companyName">Company Name</label>
               <input type="text" id="companyName" />
@@ -99,6 +99,18 @@
             <div class="field">
               <label for="companyLogo">Company Logo</label>
               <input type="file" id="companyLogo" accept="image/*" />
+            </div>
+            <div class="field">
+              <label for="fromAddress">Address</label>
+              <textarea id="fromAddress" rows="3"></textarea>
+            </div>
+            <div class="field">
+              <label for="fromEmail">Email</label>
+              <input type="email" id="fromEmail" />
+            </div>
+            <div class="field">
+              <label for="companyPhone">Phone</label>
+              <input type="text" id="companyPhone" />
             </div>
             <div class="field">
               <label for="registrationNo">Registration No.</label>
@@ -111,26 +123,6 @@
             <div class="field">
               <label for="bankAccount">Bank Account</label>
               <input type="text" id="bankAccount" placeholder="Bank name, IBAN" />
-            </div>
-            <div class="field">
-              <label for="companyPhone">Phone</label>
-              <input type="text" id="companyPhone" />
-            </div>
-          </div>
-
-          <div class="card">
-            <h2>From</h2>
-            <div class="field">
-              <label for="fromName">Name</label>
-              <input type="text" id="fromName" />
-            </div>
-            <div class="field">
-              <label for="fromEmail">Email</label>
-              <input type="email" id="fromEmail" />
-            </div>
-            <div class="field">
-              <label for="fromAddress">Address</label>
-              <textarea id="fromAddress" rows="3"></textarea>
             </div>
           </div>
         </div>
@@ -172,7 +164,7 @@
             <img id="previewLogo" class="preview-logo hidden" alt="Company logo" />
             <div id="previewCompanyNameHead" class="letterhead-name">Company Name</div>
           </div>
-          <div class="invoice-no-box highlight-box">
+          <div class="invoice-no-box accent-box">
             <div class="invoice-no-label">Invoice No.</div>
             <div id="previewInvoiceNumber" class="invoice-no-value">INV</div>
             <div class="invoice-date-label">Date</div>
@@ -181,13 +173,12 @@
         </div>
 
         <div class="invoice-paper-parties">
-          <div class="party-to highlight-box">
+          <div class="party-to accent-box">
             <h3>To:</h3>
             <div id="previewTo"></div>
           </div>
           <div class="party-from">
             <div id="previewCompanyName" class="preview-company-name"></div>
-            <div id="previewFrom"></div>
             <div id="previewCompanyMeta" class="preview-company-meta"></div>
           </div>
         </div>
@@ -202,7 +193,7 @@
         <div class="invoice-paper-totals">
           <div class="totals-row"><span id="previewSubtotalLabel">Subtotal (excl. VAT):</span><span id="previewSubtotal">$0.00</span></div>
           <div class="totals-row" id="previewDiscountRow" style="display:none"><span id="previewDiscountLabel">Discount:</span><span id="previewDiscountOut">-$0.00</span></div>
-          <div class="totals-row"><span id="previewTaxLabel">VAT (0%):</span><span id="previewTaxOut" class="highlight-inline">$0.00</span></div>
+          <div class="totals-row"><span id="previewTaxLabel">VAT (0%):</span><span id="previewTaxOut">$0.00</span></div>
           <div class="totals-row total"><span>Total:</span><span id="previewTotalOut">$0.00</span></div>
         </div>
 
@@ -218,7 +209,7 @@
 
         <div class="invoice-paper-meta-row">
           <div class="issued-by">Issued by: <span id="previewIssuedBy">-</span></div>
-          <div class="payment-due highlight-box">Payment Due: <span id="previewDueValue">-</span></div>
+          <div class="payment-due accent-box">Payment Due: <span id="previewDueValue">-</span></div>
         </div>
 
         <div id="previewFooterBlock" class="invoice-paper-footer">Thank you for your business!</div>
