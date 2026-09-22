@@ -19,10 +19,20 @@ const CURRENCIES = [
   { code: "NOK", name: "Norwegian Krone", symbol: "kr" },
 ];
 
+function fridayOfWeek(dateStr) {
+  const d = new Date(dateStr + "T00:00:00");
+  const day = d.getDay(); // 0=Sun,1=Mon,...,6=Sat
+  const diff = ((5 - day) % 7 + 7) % 7;
+  d.setDate(d.getDate() + diff);
+  return d.toISOString().slice(0, 10);
+}
+
+const todayStr = new Date().toISOString().slice(0, 10);
+
 const state = {
   invoiceNumber: "300625",
-  date: new Date().toISOString().slice(0, 10),
-  dueDate: new Date(Date.now() + 30 * 86400000).toISOString().slice(0, 10),
+  date: todayStr,
+  dueDate: fridayOfWeek(todayStr),
   currency: "USD",
   taxRate: 0,
   invoiceDiscountType: "percentage",
@@ -34,7 +44,7 @@ const state = {
   vatNo: "EE101467474",
   bankAccount: "",
   companyPhone: "5010310",
-  issuedBy: "",
+  issuedBy: "Andres Põld",
   fromEmail: "anpold@gmail.com",
   fromAddress: "Suve 19\n74613, Saue vald, Harjumaa",
   toName: "Kanaste OÜ",
