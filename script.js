@@ -391,9 +391,49 @@ function initFields() {
     renderTotalsOnly();
   });
 
-  el("downloadPdfBtn").addEventListener("click", () => {
-    window.print();
-  });
+  el("downloadPdfBtn").addEventListener("click", downloadPdf);
+}
+
+function downloadPdf() {
+  const btn = el("downloadPdfBtn");
+  const paper = el("invoicePaper");
+  const originalLabel = btn.textContent;
+  btn.disabled = true;
+  btn.textContent = "Generating PDF...";
+
+  html2canvas(paper, { scale: 2, backgroundColor: "#ffffff", useCORS: true })
+    .then((canvas) => {
+      const { jsPDF } = window.jspdf;
+      const pdf = new jsPDF("p", "in", "letter");
+      const pageWidth = 8.5;
+      const pageHeight = 11;
+      const imgWidth = pageWidth;
+      const imgHeight = (canvas.height * imgWidth) / canvas.width;
+      const imgData = canvas.toDataURL("image/png");
+
+      let heightLeft = imgHeight;
+      let position = 0;
+      pdf.addImage(imgData, "PNG", 0, position, imgWidth, imgHeight);
+      heightLeft -= pageHeight;
+
+      while (heightLeft > 0) {
+        position = heightLeft - imgHeight;
+        pdf.addPage();
+        pdf.addImage(imgData, "PNG", 0, position, imgWidth, imgHeight);
+        heightLeft -= pageHeight;
+      }
+
+      const filename = "invoice-" + (state.invoiceNumber || "draft") + ".pdf";
+      pdf.save(filename);
+    })
+    .catch((err) => {
+      console.error("PDF generation failed", err);
+      alert("Sorry, the PDF could not be generated. Please try again.");
+    })
+    .finally(() => {
+      btn.disabled = false;
+      btn.textContent = originalLabel;
+    });
 }
 
 function initTabs() {
