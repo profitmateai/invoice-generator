@@ -391,9 +391,9 @@ input[type="file"] {
   letter-spacing: 0.5px;
   color: var(--ink-faint);
 }
-.party-to { padding: 14px 16px; }
+.party-to { padding: 0; }
 .party-to div div { font-size: 13px; color: var(--ink); white-space: pre-line; line-height: 1.6; }
-.party-from { font-size: 13px; color: var(--ink-soft); padding: 2px 4px; }
+.party-from { font-size: 13px; color: var(--ink-soft); padding: 0; }
 .preview-company-meta { margin-top: 6px; white-space: pre-line; font-size: 13px; color: var(--ink-faint); }
 
 .invoice-table {
