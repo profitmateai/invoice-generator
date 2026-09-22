@@ -30,7 +30,11 @@ const state = {
   applyDiscountToDiscounted: true,
   companyName: "",
   companyLogo: "",
-  companyDetails: "",
+  registrationNo: "",
+  vatNo: "",
+  bankAccount: "",
+  companyPhone: "",
+  issuedBy: "",
   fromName: "",
   fromEmail: "",
   fromAddress: "",
@@ -40,7 +44,7 @@ const state = {
   notes: "",
   footer: "",
   items: [
-    { description: "", quantity: 1, price: 0, currency: "USD", discountType: "percentage", discountValue: 0 },
+    { description: "", unit: "", quantity: 1, price: 0, currency: "USD", discountType: "percentage", discountValue: 0 },
   ],
 };
 
@@ -106,6 +110,10 @@ function renderItems() {
         <input type="text" class="item-description" data-idx="${idx}" value="${escapeAttr(item.description)}" />
       </div>
       <div class="field-inline">
+        <label>Unit</label>
+        <input type="text" class="item-unit" data-idx="${idx}" placeholder="pcs, hrs..." value="${escapeAttr(item.unit)}" />
+      </div>
+      <div class="field-inline">
         <label>Quantity</label>
         <input type="number" class="item-quantity" data-idx="${idx}" min="0" step="1" value="${item.quantity}" />
       </div>
@@ -151,6 +159,12 @@ function attachItemListeners() {
   document.querySelectorAll(".item-description").forEach((input) => {
     input.addEventListener("input", (e) => {
       state.items[Number(e.target.dataset.idx)].description = e.target.value;
+      renderTotalsOnly();
+    });
+  });
+  document.querySelectorAll(".item-unit").forEach((input) => {
+    input.addEventListener("input", (e) => {
+      state.items[Number(e.target.dataset.idx)].unit = e.target.value;
       renderTotalsOnly();
     });
   });
@@ -223,11 +237,15 @@ function renderTotalsOnly() {
 function renderPreview() {
   const { subtotal, invoiceDiscount, tax, total } = computeTotals();
   const cur = state.currency;
+  const taxRate = state.taxRate || 0;
 
-  el("previewCompanyName").textContent = state.companyName || "";
-  el("previewInvoiceNumber").textContent = "#" + (state.invoiceNumber || "");
-  el("previewDateLabel").textContent = "Date: " + formatDate(state.date);
-  el("previewDueDateLabel").textContent = "Due Date: " + formatDate(state.dueDate);
+  const companyName = state.companyName || "Company Name";
+  el("previewCompanyNameHead").textContent = companyName;
+  el("previewCompanyName").textContent = companyName;
+  el("previewInvoiceNumber").textContent = state.invoiceNumber || "-";
+  el("previewDateValue").textContent = formatDate(state.date);
+  el("previewDueValue").textContent = formatDate(state.dueDate);
+  el("previewIssuedBy").textContent = state.issuedBy && state.issuedBy.trim() ? state.issuedBy : "-";
 
   const logo = el("previewLogo");
   if (state.companyLogo) {
@@ -237,32 +255,35 @@ function renderPreview() {
     logo.classList.add("hidden");
   }
 
-  el("previewFrom").innerHTML = renderParty(state.fromName, state.fromEmail, state.fromAddress);
+  el("previewFrom").innerHTML = renderParty(null, null, state.fromAddress);
   el("previewTo").innerHTML = renderParty(state.toName, state.toEmail, state.toAddress);
+
+  const metaLines = [];
+  if (state.registrationNo && state.registrationNo.trim()) metaLines.push("Registration No: " + state.registrationNo);
+  if (state.vatNo && state.vatNo.trim()) metaLines.push("VAT No: " + state.vatNo);
+  if (state.bankAccount && state.bankAccount.trim()) metaLines.push("Bank Account: " + state.bankAccount);
+  el("previewCompanyMeta").textContent = metaLines.join("\n");
 
   const body = el("previewItemsBody");
   body.innerHTML = state.items
     .map((it) => {
-      const discountLabel =
-        Number(it.discountValue) > 0
-          ? it.discountType === "percentage"
-            ? `${it.discountValue}%`
-            : fmtMoney(it.discountValue, it.currency)
-          : "-";
       return `<tr>
         <td>${escapeAttr(it.description) || "-"}</td>
+        <td>${escapeAttr(it.unit) || "-"}</td>
         <td>${it.quantity}</td>
         <td>${fmtMoney(it.price, it.currency)}</td>
-        <td>${discountLabel}</td>
+        <td class="vat-cell">${taxRate}%</td>
         <td>${fmtMoney(itemLineAmount(it), it.currency)}</td>
       </tr>`;
     })
     .join("");
 
+  el("previewSubtotalLabel").textContent = `Subtotal (excl. VAT) (${taxRate}%):`;
   el("previewSubtotal").textContent = fmtMoney(subtotal, cur);
-  el("previewTaxLabel").textContent = `Tax (${state.taxRate || 0}%):`;
+  el("previewTaxLabel").textContent = `VAT (${taxRate}%):`;
   el("previewTaxOut").textContent = fmtMoney(tax, cur);
   el("previewTotalOut").textContent = fmtMoney(total, cur);
+  el("previewToPay").textContent = fmtMoney(total, cur);
 
   const pDiscRow = el("previewDiscountRow");
   if (invoiceDiscount > 0) {
@@ -283,6 +304,12 @@ function renderPreview() {
   }
 
   el("previewFooterBlock").textContent = state.footer && state.footer.trim() ? state.footer : "Thank you for your business!";
+
+  el("footAddress").textContent = [state.fromAddress, state.companyPhone && "Tel: " + state.companyPhone, state.fromEmail && "Email: " + state.fromEmail]
+    .filter(Boolean)
+    .join("\n");
+  el("footReg").textContent = state.registrationNo && state.registrationNo.trim() ? "Registration No: " + state.registrationNo : "";
+  el("footVat").textContent = state.vatNo && state.vatNo.trim() ? "VAT No: " + state.vatNo : "";
 }
 
 function renderParty(name, email, address) {
@@ -318,7 +345,11 @@ function initFields() {
   bindField("taxRate", "taxRate");
   bindField("invoiceDiscountValue", "invoiceDiscountValue");
   bindField("companyName", "companyName");
-  bindField("companyDetails", "companyDetails");
+  bindField("registrationNo", "registrationNo");
+  bindField("vatNo", "vatNo");
+  bindField("bankAccount", "bankAccount");
+  bindField("companyPhone", "companyPhone");
+  bindField("issuedBy", "issuedBy");
   bindField("fromName", "fromName");
   bindField("fromEmail", "fromEmail");
   bindField("fromAddress", "fromAddress");
@@ -358,7 +389,7 @@ function initFields() {
   });
 
   el("addItemBtn").addEventListener("click", () => {
-    state.items.push({ description: "", quantity: 1, price: 0, currency: state.currency, discountType: "percentage", discountValue: 0 });
+    state.items.push({ description: "", unit: "", quantity: 1, price: 0, currency: state.currency, discountType: "percentage", discountValue: 0 });
     renderItems();
     renderTotalsOnly();
   });

@@ -44,7 +44,7 @@
               <input type="date" id="invoiceDate" />
             </div>
             <div class="field">
-              <label for="dueDate">Due Date</label>
+              <label for="dueDate">Payment Due</label>
               <input type="date" id="dueDate" />
             </div>
             <div class="field">
@@ -52,8 +52,12 @@
               <select id="invoiceCurrency"></select>
             </div>
             <div class="field">
-              <label for="taxRate">Tax Rate (%)</label>
+              <label for="taxRate">Tax / VAT Rate (%)</label>
               <input type="number" id="taxRate" min="0" step="0.01" value="0" />
+            </div>
+            <div class="field">
+              <label for="issuedBy">Issued By</label>
+              <input type="text" id="issuedBy" placeholder="Name of the person issuing the invoice" />
             </div>
             <div class="field">
               <label>Invoice Discount</label>
@@ -97,8 +101,20 @@
               <input type="file" id="companyLogo" accept="image/*" />
             </div>
             <div class="field">
-              <label for="companyDetails">Company Details</label>
-              <textarea id="companyDetails" rows="3" placeholder="Registration number, VAT ID, etc."></textarea>
+              <label for="registrationNo">Registration No.</label>
+              <input type="text" id="registrationNo" />
+            </div>
+            <div class="field">
+              <label for="vatNo">VAT No.</label>
+              <input type="text" id="vatNo" />
+            </div>
+            <div class="field">
+              <label for="bankAccount">Bank Account</label>
+              <input type="text" id="bankAccount" placeholder="Bank name, IBAN" />
+            </div>
+            <div class="field">
+              <label for="companyPhone">Phone</label>
+              <input type="text" id="companyPhone" />
             </div>
           </div>
 
@@ -152,41 +168,47 @@
     <section id="previewPanel" class="panel hidden">
       <div id="invoicePaper" class="invoice-paper">
         <div class="invoice-paper-head">
-          <div>
+          <div class="letterhead-box">
             <img id="previewLogo" class="preview-logo hidden" alt="Company logo" />
-            <div id="previewCompanyName" class="preview-company-name"></div>
-            <h1>INVOICE</h1>
-            <div id="previewInvoiceNumber" class="muted">#INV</div>
+            <div id="previewCompanyNameHead" class="letterhead-name">Company Name</div>
           </div>
-          <div class="invoice-paper-dates">
-            <div><span id="previewDateLabel">Date:</span></div>
-            <div><span id="previewDueDateLabel">Due Date:</span></div>
+          <div class="invoice-no-box highlight-box">
+            <div class="invoice-no-label">Invoice No.</div>
+            <div id="previewInvoiceNumber" class="invoice-no-value">INV</div>
+            <div class="invoice-date-label">Date</div>
+            <div id="previewDateValue" class="invoice-date-value">-</div>
           </div>
         </div>
 
         <div class="invoice-paper-parties">
-          <div>
-            <h3>From:</h3>
-            <div id="previewFrom"></div>
-          </div>
-          <div>
+          <div class="party-to highlight-box">
             <h3>To:</h3>
             <div id="previewTo"></div>
+          </div>
+          <div class="party-from">
+            <div id="previewCompanyName" class="preview-company-name"></div>
+            <div id="previewFrom"></div>
+            <div id="previewCompanyMeta" class="preview-company-meta"></div>
           </div>
         </div>
 
         <table class="invoice-table">
           <thead>
-            <tr><th>Description</th><th>Quantity</th><th>Price</th><th>Discount</th><th>Amount</th></tr>
+            <tr><th>Item</th><th>Unit</th><th>Quantity</th><th>Price</th><th>VAT</th><th>Amount</th></tr>
           </thead>
           <tbody id="previewItemsBody"></tbody>
         </table>
 
         <div class="invoice-paper-totals">
-          <div class="totals-row"><span>Subtotal:</span><span id="previewSubtotal">$0.00</span></div>
+          <div class="totals-row"><span id="previewSubtotalLabel">Subtotal (excl. VAT):</span><span id="previewSubtotal">$0.00</span></div>
           <div class="totals-row" id="previewDiscountRow" style="display:none"><span id="previewDiscountLabel">Discount:</span><span id="previewDiscountOut">-$0.00</span></div>
-          <div class="totals-row"><span id="previewTaxLabel">Tax (0%):</span><span id="previewTaxOut">$0.00</span></div>
+          <div class="totals-row"><span id="previewTaxLabel">VAT (0%):</span><span id="previewTaxOut" class="highlight-inline">$0.00</span></div>
           <div class="totals-row total"><span>Total:</span><span id="previewTotalOut">$0.00</span></div>
+        </div>
+
+        <div class="invoice-paper-pay-row">
+          <span class="pay-label">To Pay:</span>
+          <span id="previewToPay" class="pay-value">$0.00</span>
         </div>
 
         <div id="previewNotesBlock" class="invoice-paper-notes hidden">
@@ -194,7 +216,18 @@
           <div id="previewNotes"></div>
         </div>
 
+        <div class="invoice-paper-meta-row">
+          <div class="issued-by">Issued by: <span id="previewIssuedBy">-</span></div>
+          <div class="payment-due highlight-box">Payment Due: <span id="previewDueValue">-</span></div>
+        </div>
+
         <div id="previewFooterBlock" class="invoice-paper-footer">Thank you for your business!</div>
+
+        <div class="invoice-paper-letterfoot">
+          <div id="footAddress"></div>
+          <div id="footReg"></div>
+          <div id="footVat"></div>
+        </div>
       </div>
 
       <button id="downloadPdfBtn" class="btn-primary" type="button">Download PDF</button>
