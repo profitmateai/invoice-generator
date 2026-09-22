@@ -251,7 +251,6 @@ function renderPreview() {
 
   const companyName = state.companyName || "Company Name";
   el("previewCompanyNameHead").textContent = companyName;
-  el("previewCompanyName").textContent = companyName;
   el("previewInvoiceNumber").textContent = state.invoiceNumber || "-";
   el("previewDateValue").textContent = formatDate(state.date);
   el("previewDueValue").textContent = formatDate(state.dueDate);
