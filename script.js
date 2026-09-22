@@ -20,7 +20,7 @@ const CURRENCIES = [
 ];
 
 const state = {
-  invoiceNumber: "INV-" + Math.floor(1000 + Math.random() * 9000),
+  invoiceNumber: "300625",
   date: new Date().toISOString().slice(0, 10),
   dueDate: new Date(Date.now() + 30 * 86400000).toISOString().slice(0, 10),
   currency: "USD",
@@ -30,21 +30,22 @@ const state = {
   applyDiscountToDiscounted: true,
   companyName: "",
   companyLogo: "",
-  registrationNo: "",
-  vatNo: "",
+  registrationNo: "12121424",
+  vatNo: "EE101467474",
   bankAccount: "",
-  companyPhone: "",
+  companyPhone: "5010310",
   issuedBy: "",
   fromName: "",
-  fromEmail: "",
-  fromAddress: "",
-  toName: "",
+  fromEmail: "anpold@gmail.com",
+  fromAddress: "Suve 19\n74613, Saue vald, Harjumaa",
+  toName: "Kanaste OÜ",
   toEmail: "",
-  toAddress: "",
+  toAddress:
+    "Suve 19\n76413 , Aila küla, Saue vald\nHarjumaa, Eesti\n\nReg.nr 12121424\nKMKR nr:EE101467474\nCoop Pank: EE21 4204 2786 1080 4602",
   notes: "",
   footer: "",
   items: [
-    { description: "", unit: "", quantity: 1, price: 0, currency: "USD", discountType: "percentage", discountValue: 0 },
+    { description: "Software Development", unit: "", quantity: 1, price: 1000, currency: "USD", discountType: "percentage", discountValue: 0 },
   ],
 };
 
@@ -326,6 +327,7 @@ function formatDate(dateStr) {
 }
 
 function bindField(id, key, transform) {
+  el(id).value = state[key];
   el(id).addEventListener("input", (e) => {
     state[key] = transform ? transform(e.target.value) : e.target.value;
     renderTotalsOnly();
@@ -333,12 +335,6 @@ function bindField(id, key, transform) {
 }
 
 function initFields() {
-  el("invoiceNumber").value = state.invoiceNumber;
-  el("invoiceDate").value = state.date;
-  el("dueDate").value = state.dueDate;
-  el("taxRate").value = state.taxRate;
-  el("invoiceDiscountValue").value = state.invoiceDiscountValue;
-
   bindField("invoiceNumber", "invoiceNumber");
   bindField("invoiceDate", "date");
   bindField("dueDate", "dueDate");
