@@ -49,7 +49,7 @@ const state = {
   fromAddress: "Suve 19\n76413, Aila küla, Saue vald\nHarjumaa, Eesti",
   toName: "UAB GTS TRANSPORTAS",
   toEmail: "",
-  toAddress: "305709791\nVAT LT100014328816\nAddress: Ateities pl. 4B, LT-52322 Kaunas\nLithuania",
+  toAddress: "Registration code 305709791\nVAT LT100014328816\nAddress: Ateities pl. 4B, LT-52322 Kaunas\nLithuania",
   notes: "",
   footer: "",
   items: [
