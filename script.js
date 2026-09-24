@@ -42,15 +42,14 @@ const state = {
   companyLogo: "",
   registrationNo: "12121424",
   vatNo: "EE101467474",
-  bankAccount: "",
+  bankAccount: "Coop Pank: EE21 4204 2786 1080 4602",
   companyPhone: "5010310",
   issuedBy: "Andres Põld",
   fromEmail: "anpold@gmail.com",
-  fromAddress: "Suve 19\n74613, Saue vald, Harjumaa",
-  toName: "Kanaste OÜ",
+  fromAddress: "Suve 19\n76413, Aila küla, Saue vald\nHarjumaa, Eesti",
+  toName: "UAB GTS TRANSPORTAS",
   toEmail: "",
-  toAddress:
-    "Suve 19\n76413 , Aila küla, Saue vald\nHarjumaa, Eesti\n\nReg.nr 12121424\nKMKR nr:EE101467474\nCoop Pank: EE21 4204 2786 1080 4602",
+  toAddress: "305709791\nVAT LT100014328816\nAddress: Ateities pl. 4B, LT-52322 Kaunas\nLithuania",
   notes: "",
   footer: "",
   items: [
@@ -265,7 +264,13 @@ function renderPreview() {
   }
 
   el("previewTo").innerHTML = renderParty(state.toName, state.toEmail, state.toAddress);
-  el("previewCompanyMeta").textContent = "YOUR COMPANY DETAILS";
+
+  const metaLines = [];
+  if (state.fromAddress && state.fromAddress.trim()) metaLines.push(state.fromAddress);
+  if (state.registrationNo && state.registrationNo.trim()) metaLines.push("Registration No: " + state.registrationNo);
+  if (state.vatNo && state.vatNo.trim()) metaLines.push("VAT No: " + state.vatNo);
+  if (state.bankAccount && state.bankAccount.trim()) metaLines.push("Bank Account: " + state.bankAccount);
+  el("previewCompanyMeta").textContent = metaLines.length ? metaLines.join("\n") : "YOUR COMPANY DETAILS";
 
   const body = el("previewItemsBody");
   body.innerHTML = state.items
