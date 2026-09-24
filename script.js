@@ -47,7 +47,7 @@ const state = {
   issuedBy: "Andres Põld",
   fromEmail: "anpold@gmail.com",
   fromAddress: "Suve 19\n76413, Aila küla, Saue vald\nHarjumaa, Eesti",
-  toName: "UAB GTS TRANSPORTAS",
+  toName: "GTS Transportas, UAB",
   toEmail: "",
   toAddress: "Registration code 305709791\nVAT LT100014328816\nAddress: Ateities pl. 4B, LT-52322 Kaunas\nLithuania",
   notes: "",
