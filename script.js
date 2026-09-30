@@ -57,6 +57,7 @@ const state = {
   registrationNo: "12121424",
   vatNo: "EE101467474",
   bankAccount: "Coop Pank: EE21 4204 2786 1080 4602",
+  swiftBic: "EKRDEE22",
   companyPhone: "5010310",
   issuedBy: "Andres Põld",
   fromEmail: "anpold@gmail.com",
@@ -284,6 +285,7 @@ function renderPreview() {
   if (state.registrationNo && state.registrationNo.trim()) metaLines.push("Registration No: " + state.registrationNo);
   if (state.vatNo && state.vatNo.trim()) metaLines.push("VAT No: " + state.vatNo);
   if (state.bankAccount && state.bankAccount.trim()) metaLines.push("Bank Account: " + state.bankAccount);
+  if (state.swiftBic && state.swiftBic.trim()) metaLines.push("SWIFT/BIC: " + state.swiftBic);
   el("previewCompanyMeta").textContent = metaLines.length ? metaLines.join("\n") : "YOUR COMPANY DETAILS";
 
   const body = el("previewItemsBody");
@@ -370,6 +372,7 @@ function initFields() {
   bindField("registrationNo", "registrationNo");
   bindField("vatNo", "vatNo");
   bindField("bankAccount", "bankAccount");
+  bindField("swiftBic", "swiftBic");
   bindField("companyPhone", "companyPhone");
   bindField("issuedBy", "issuedBy");
   bindField("fromEmail", "fromEmail");
