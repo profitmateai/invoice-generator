@@ -19,18 +19,32 @@ const CURRENCIES = [
   { code: "NOK", name: "Norwegian Krone", symbol: "kr" },
 ];
 
+function pad2(n) { return String(n).padStart(2, "0"); }
+
+// Local YYYY-MM-DD (toISOString uses UTC and can land on the wrong day)
+function localDateStr(d) {
+  return d.getFullYear() + "-" + pad2(d.getMonth() + 1) + "-" + pad2(d.getDate());
+}
+
 function fridayOfWeek(dateStr) {
   const d = new Date(dateStr + "T00:00:00");
   const day = d.getDay(); // 0=Sun,1=Mon,...,6=Sat
   const diff = ((5 - day) % 7 + 7) % 7;
   d.setDate(d.getDate() + diff);
-  return d.toISOString().slice(0, 10);
+  return localDateStr(d);
 }
 
-const todayStr = new Date().toISOString().slice(0, 10);
+// Invoice number is the invoice date as DDMMYY, e.g. 2026-09-30 -> 300926
+function invoiceNumberFromDate(dateStr) {
+  const [y, m, d] = (dateStr || "").split("-");
+  if (!y || !m || !d) return "";
+  return d + m + y.slice(-2);
+}
+
+const todayStr = localDateStr(new Date());
 
 const state = {
-  invoiceNumber: "300625",
+  invoiceNumber: invoiceNumberFromDate(todayStr),
   date: todayStr,
   dueDate: fridayOfWeek(todayStr),
   currency: "USD",
@@ -344,6 +358,11 @@ function bindField(id, key, transform) {
 function initFields() {
   bindField("invoiceNumber", "invoiceNumber");
   bindField("invoiceDate", "date");
+  el("invoiceDate").addEventListener("input", () => {
+    state.invoiceNumber = invoiceNumberFromDate(state.date);
+    el("invoiceNumber").value = state.invoiceNumber;
+    renderTotalsOnly();
+  });
   bindField("dueDate", "dueDate");
   bindField("taxRate", "taxRate");
   bindField("invoiceDiscountValue", "invoiceDiscountValue");
